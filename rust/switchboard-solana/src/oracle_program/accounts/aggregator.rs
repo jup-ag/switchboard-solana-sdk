@@ -1,4 +1,3 @@
-use crate::cfg_client;
 use crate::prelude::*;
 use rust_decimal::Decimal;
 use std::cell::Ref;
@@ -119,11 +118,35 @@ pub struct AggregatorAccountData {
     pub job_weights: [u8; 16],
     /// Unix timestamp when the feed was created.
     pub creation_timestamp: i64,
-    /// Use sliding windoe or round based resolution
+    /// Use sliding window or round based resolution
     /// NOTE: This changes result propogation in latest_round_result
     pub resolution_mode: AggregatorResolutionMode,
+    pub base_priority_fee: u32,
+    pub priority_fee_bump: u32,
+    pub priority_fee_bump_period: u32,
+    pub max_priority_fee_multiplier: u32,
+    pub parent_function: Pubkey,
     /// Reserved for future info.
-    pub _ebuf: [u8; 138],
+    pub _ebuf: [u8; 90],
+}
+impl Default for AggregatorAccountData {
+    fn default() -> Self {
+        unsafe { std::mem::zeroed() }
+    }
+}
+
+impl TryInto<AggregatorAccountData> for Option<Vec<u8>> {
+    type Error = SwitchboardError;
+
+    fn try_into(self) -> std::result::Result<AggregatorAccountData, Self::Error> {
+        if let Some(data) = self {
+            bytemuck::try_from_bytes(&data)
+                .map(|&x| x)
+                .map_err(|_| SwitchboardError::AccountDeserializationError)
+        } else {
+            Err(SwitchboardError::AccountDeserializationError)
+        }
+    }
 }
 
 impl AggregatorAccountData {
@@ -148,13 +171,13 @@ impl AggregatorAccountData {
         switchboard_feed: &'info AccountInfo<'info>,
     ) -> anchor_lang::Result<Ref<'info, AggregatorAccountData>> {
         let data = switchboard_feed.try_borrow_data()?;
-        if data.len() < AggregatorAccountData::discriminator().len() {
+        if data.len() < AggregatorAccountData::DISCRIMINATOR.len() {
             return Err(ErrorCode::AccountDiscriminatorNotFound.into());
         }
 
         let mut disc_bytes = [0u8; 8];
         disc_bytes.copy_from_slice(&data[..8]);
-        if disc_bytes != AggregatorAccountData::discriminator() {
+        if disc_bytes != AggregatorAccountData::DISCRIMINATOR {
             return Err(ErrorCode::AccountDiscriminatorMismatch.into());
         }
 
@@ -177,13 +200,13 @@ impl AggregatorAccountData {
     /// let data_feed = AggregatorAccountData::new_from_bytes(feed_account_info.try_borrow_data()?)?;
     /// ```
     pub fn new_from_bytes(data: &[u8]) -> anchor_lang::Result<&AggregatorAccountData> {
-        if data.len() < AggregatorAccountData::discriminator().len() {
+        if data.len() < AggregatorAccountData::DISCRIMINATOR.len() {
             return Err(ErrorCode::AccountDiscriminatorNotFound.into());
         }
 
         let mut disc_bytes = [0u8; 8];
         disc_bytes.copy_from_slice(&data[..8]);
-        if disc_bytes != AggregatorAccountData::discriminator() {
+        if disc_bytes != AggregatorAccountData::DISCRIMINATOR {
             return Err(ErrorCode::AccountDiscriminatorMismatch.into());
         }
 
@@ -237,7 +260,7 @@ impl AggregatorAccountData {
 
     /// Check the variance (as a percentage difference from the max delivered
     /// oracle value) from all oracles.
-    pub fn check_variace(&self, max_variance: Decimal) -> anchor_lang::Result<()> {
+    pub fn check_variance(&self, max_variance: Decimal) -> anchor_lang::Result<()> {
         if max_variance > Decimal::ONE {
             return Err(SwitchboardError::InvalidFunctionInput.into());
         }
@@ -282,39 +305,11 @@ impl AggregatorAccountData {
         }
         Ok(Clock::get()?.unix_timestamp < self.expiration)
     }
-
-    cfg_client! {
-        pub fn fetch(
-            client: &solana_client::rpc_client::RpcClient,
-            pubkey: Pubkey,
-        ) -> std::result::Result<Self, switchboard_common::SbError> {
-            crate::client::fetch_zerocopy_account(client, pubkey)
-        }
-
-        pub async fn fetch_async(
-            client: &solana_client::nonblocking::rpc_client::RpcClient,
-            pubkey: Pubkey,
-        ) -> std::result::Result<Self, switchboard_common::SbError> {
-            crate::client::fetch_zerocopy_account_async(client, pubkey).await
-        }
-
-        pub fn fetch_sync<T: solana_sdk::client::SyncClient>(
-            client: &T,
-            pubkey: Pubkey,
-        ) -> std::result::Result<Self, switchboard_common::SbError> {
-            crate::client::fetch_zerocopy_account_sync(client, pubkey)
-        }
-    }
 }
 
 #[cfg(test)]
 mod tests {
     use super::*;
-    impl Default for AggregatorAccountData {
-        fn default() -> Self {
-            unsafe { std::mem::zeroed() }
-        }
-    }
 
     fn create_aggregator(lastest_round: AggregatorRound) -> AggregatorAccountData {
         AggregatorAccountData {

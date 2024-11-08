@@ -1,0 +1,86 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Invoke a cross-program instruction with program signatures."><title>invoke_signed in switchboard_solana::prelude - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../static.files/" data-current-crate="switchboard_solana" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.2 (25ef9e3d8 2024-04-09)" data-channel="1.77.2" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../static.files/storage-4c98445ec4002617.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc fn"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../index.html">switchboard_solana</a><span class="version">0.29.108</span></h2></div><div class="sidebar-elems"><h2><a href="index.html">In switchboard_solana::prelude</a></h2></div></nav><div class="sidebar-resizer"></div>
+    <main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../switchboard_solana/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Function <a href="../index.html">switchboard_solana</a>::<wbr><a href="index.html">prelude</a>::<wbr><a class="fn" href="#">invoke_signed</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><pre class="rust item-decl"><code>pub fn invoke_signed(
+    instruction: &amp;<a class="struct" href="struct.Instruction.html" title="struct switchboard_solana::prelude::Instruction">Instruction</a>,
+    account_infos: &amp;[<a class="struct" href="struct.AccountInfo.html" title="struct switchboard_solana::prelude::AccountInfo">AccountInfo</a>&lt;'_&gt;],
+    signers_seeds: &amp;[&amp;[&amp;[<a class="primitive" href="https://doc.rust-lang.org/1.77.2/std/primitive.u8.html">u8</a>]]]
+) -&gt; <a class="enum" href="enum.Result.html" title="enum switchboard_solana::prelude::Result">Result</a>&lt;<a class="primitive" href="https://doc.rust-lang.org/1.77.2/std/primitive.unit.html">()</a>, <a class="enum" href="enum.ProgramError.html" title="enum switchboard_solana::prelude::ProgramError">ProgramError</a>&gt;</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Invoke a cross-program instruction with program signatures.</p>
+<p>This function is like <a href="fn.invoke.html" title="fn switchboard_solana::prelude::invoke"><code>invoke</code></a> with the additional ability to virtually
+sign an invocation on behalf of one or more <a href="https://solana.com/docs/core/cpi#program-derived-addresses">program derived addresses</a> (PDAs)
+controlled by the calling program, allowing the callee to mutate them, or
+otherwise confirm that a PDA program key has authorized the actions of the
+callee.</p>
+<p>There is no cryptographic signing involved — PDA signing is a runtime
+construct that allows the calling program to control accounts as if it could
+cryptographically sign for them; and the callee to treat the account as if it
+was cryptographically signed.</p>
+<p>The <code>signer_seeds</code> parameter is a slice of <code>u8</code> slices where the inner
+slices represent the seeds plus the <em>bump seed</em> used to derive (with
+<a href="struct.Pubkey.html#method.find_program_address" title="associated function switchboard_solana::prelude::Pubkey::find_program_address"><code>Pubkey::find_program_address</code></a>) one of the PDAs within the <code>account_infos</code>
+slice of <code>AccountInfo</code>s. During invocation, the runtime will re-derive the
+PDA from the seeds and the calling program’s ID, and if it matches one of
+the accounts in <code>account_info</code>, will consider that account “signed”.</p>
+<p>See the documentation for <a href="struct.Pubkey.html#method.find_program_address" title="associated function switchboard_solana::prelude::Pubkey::find_program_address"><code>Pubkey::find_program_address</code></a> for more
+about program derived addresses.</p>
+<h2 id="examples"><a class="doc-anchor" href="#examples">§</a>Examples</h2>
+<p>A simple example of creating an account for a PDA:</p>
+
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>solana_program::{
+    account_info::{next_account_info, AccountInfo},
+    entrypoint,
+    entrypoint::ProgramResult,
+    program::invoke_signed,
+    pubkey::Pubkey,
+    system_instruction,
+    system_program,
+};
+
+<span class="macro">entrypoint!</span>(process_instruction);
+
+<span class="kw">fn </span>process_instruction(
+    program_id: <span class="kw-2">&amp;</span>Pubkey,
+    accounts: <span class="kw-2">&amp;</span>[AccountInfo],
+    instruction_data: <span class="kw-2">&amp;</span>[u8],
+) -&gt; ProgramResult {
+    <span class="kw">let </span>account_info_iter = <span class="kw-2">&amp;mut </span>accounts.iter();
+    <span class="kw">let </span>payer = next_account_info(account_info_iter)<span class="question-mark">?</span>;
+    <span class="kw">let </span>vault_pda = next_account_info(account_info_iter)<span class="question-mark">?</span>;
+    <span class="kw">let </span>system_program = next_account_info(account_info_iter)<span class="question-mark">?</span>;
+
+    <span class="macro">assert!</span>(payer.is_writable);
+    <span class="macro">assert!</span>(payer.is_signer);
+    <span class="macro">assert!</span>(vault_pda.is_writable);
+    <span class="macro">assert_eq!</span>(vault_pda.owner, <span class="kw-2">&amp;</span>system_program::ID);
+    <span class="macro">assert!</span>(system_program::check_id(system_program.key));
+
+    <span class="kw">let </span>vault_bump_seed = instruction_data[<span class="number">0</span>];
+    <span class="kw">let </span>vault_seeds = <span class="kw-2">&amp;</span>[<span class="string">b"vault"</span>, payer.key.as_ref(), <span class="kw-2">&amp;</span>[vault_bump_seed]];
+    <span class="kw">let </span>expected_vault_pda = Pubkey::create_program_address(vault_seeds, program_id)<span class="question-mark">?</span>;
+
+    <span class="macro">assert_eq!</span>(vault_pda.key, <span class="kw-2">&amp;</span>expected_vault_pda);
+
+    <span class="kw">let </span>lamports = <span class="number">10000000</span>;
+    <span class="kw">let </span>vault_size = <span class="number">16</span>;
+
+    invoke_signed(
+        <span class="kw-2">&amp;</span>system_instruction::create_account(
+            <span class="kw-2">&amp;</span>payer.key,
+            <span class="kw-2">&amp;</span>vault_pda.key,
+            lamports,
+            vault_size,
+            <span class="kw-2">&amp;</span>program_id,
+        ),
+        <span class="kw-2">&amp;</span>[
+            payer.clone(),
+            vault_pda.clone(),
+        ],
+        <span class="kw-2">&amp;</span>[
+            <span class="kw-2">&amp;</span>[
+                <span class="string">b"vault"</span>,
+                payer.key.as_ref(),
+                <span class="kw-2">&amp;</span>[vault_bump_seed],
+            ],
+        ]
+    )<span class="question-mark">?</span>;
+    <span class="prelude-val">Ok</span>(())
+}</code></pre></div>
+</div></details></section></div></main></body></html>

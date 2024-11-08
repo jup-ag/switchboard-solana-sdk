@@ -1,8 +1,4 @@
 use crate::prelude::*;
-use anchor_lang::solana_program::entrypoint::ProgramResult;
-use anchor_lang::solana_program::instruction::Instruction;
-use anchor_lang::solana_program::program::{invoke, invoke_signed};
-use anchor_lang::Discriminator;
 
 #[derive(Accounts)]
 #[instruction(params: PermissionSetParams)] // rpc parameters hint
@@ -20,7 +16,7 @@ pub struct PermissionSetParams {
 }
 
 impl Discriminator for PermissionSet<'_> {
-    const DISCRIMINATOR: [u8; 8] = [211, 122, 185, 120, 129, 182, 55, 103];
+    const DISCRIMINATOR: &'static [u8] = &[211, 122, 185, 120, 129, 182, 55, 103];
 }
 
 impl<'info> PermissionSet<'info> {
@@ -31,7 +27,7 @@ impl<'info> PermissionSet<'info> {
     ) -> anchor_lang::Result<Instruction> {
         let accounts = self.to_account_metas(None);
 
-        let mut data: Vec<u8> = PermissionSet::discriminator().try_to_vec()?;
+        let mut data: Vec<u8> = PermissionSet::DISCRIMINATOR.try_to_vec()?;
         let mut param_vec: Vec<u8> = params.try_to_vec()?;
         data.append(&mut param_vec);
 

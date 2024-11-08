@@ -5,7 +5,7 @@ use std::cell::Ref;
 use superslice::*;
 
 #[zero_copy(unsafe)]
-#[derive(Default)]
+#[derive(Default, Debug)]
 #[repr(packed)]
 pub struct AggregatorHistoryRow {
     /// The timestamp of the sample.
@@ -36,7 +36,7 @@ impl<'a> AggregatorHistoryBuffer<'a> {
 
         let mut disc_bytes = [0u8; 8];
         disc_bytes.copy_from_slice(&data[..8]);
-        if disc_bytes != AggregatorHistoryBuffer::discriminator() {
+        if disc_bytes != AggregatorHistoryBuffer::DISCRIMINATOR {
             return Err(SwitchboardError::AccountDiscriminatorMismatch.into());
         }
 
@@ -88,12 +88,12 @@ impl<'a> AggregatorHistoryBuffer<'a> {
 }
 
 impl<'a> Discriminator for AggregatorHistoryBuffer<'a> {
-    const DISCRIMINATOR: [u8; 8] = [66, 85, 70, 70, 69, 82, 120, 120];
+    const DISCRIMINATOR: &'static [u8] = &[66, 85, 70, 70, 69, 82, 120, 120];
 }
 
 impl<'a> Owner for AggregatorHistoryBuffer<'a> {
     fn owner() -> Pubkey {
-        SWITCHBOARD_PROGRAM_ID
+        *SWITCHBOARD_PROGRAM_ID
     }
 }
 
@@ -101,11 +101,11 @@ impl<'a> Owner for AggregatorHistoryBuffer<'a> {
 mod tests {
     use super::*;
 
-    impl<'a> Default for AggregatorHistoryBuffer<'a> {
-        fn default() -> Self {
-            unsafe { std::mem::zeroed() }
-        }
-    }
+    // impl<'a> Default for AggregatorHistoryBuffer<'a> {
+    // fn default() -> Self {
+    // unsafe { std::mem::zeroed() }
+    // }
+    // }
 
     // insertion_idx = 1
     // 1646249940   - 100.6022611525

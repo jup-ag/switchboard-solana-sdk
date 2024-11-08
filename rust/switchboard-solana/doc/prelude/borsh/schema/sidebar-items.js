@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["Definition","Fields"],"struct":["BorshSchemaContainer"],"trait":["BorshSchema"],"type":["Declaration","FieldName","VariantName"]};

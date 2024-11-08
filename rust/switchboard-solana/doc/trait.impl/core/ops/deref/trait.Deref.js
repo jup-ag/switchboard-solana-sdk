@@ -1,0 +1,3 @@
+(function() {var implementors = {
+"switchboard_solana":[["impl <a class=\"trait\" href=\"https://doc.rust-lang.org/1.77.2/core/ops/deref/trait.Deref.html\" title=\"trait core::ops::deref::Deref\">Deref</a> for <a class=\"struct\" href=\"switchboard_solana/program_id/struct.SWITCHBOARD_ATTESTATION_PROGRAM_ID.html\" title=\"struct switchboard_solana::program_id::SWITCHBOARD_ATTESTATION_PROGRAM_ID\">SWITCHBOARD_ATTESTATION_PROGRAM_ID</a>"]]
+};if (window.register_implementors) {window.register_implementors(implementors);} else {window.pending_implementors = implementors;}})()

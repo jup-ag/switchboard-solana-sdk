@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["VerifierHeartbeat","VerifierHeartbeatAccounts","VerifierHeartbeatArgs","VerifierHeartbeatBumps","VerifierHeartbeatParams"]};

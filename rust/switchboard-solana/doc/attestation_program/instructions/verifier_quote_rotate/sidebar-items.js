@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["VerifierQuoteRotate","VerifierQuoteRotateAccounts","VerifierQuoteRotateBumps","VerifierQuoteRotateParams"]};

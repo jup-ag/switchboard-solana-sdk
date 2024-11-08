@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["VrfStatus"],"struct":["AccountMetaBorsh","AccountMetaZC","Callback","CallbackZC","CompletedPoint","CompletedPointZC","EcvrfIntermediate","EcvrfProofZC","EdwardsPoint","EdwardsPointZC","FieldElement51","FieldElementZC","ProjectivePoint","ProjectivePointZC","Scalar","VrfBuilder","VrfRound"]};

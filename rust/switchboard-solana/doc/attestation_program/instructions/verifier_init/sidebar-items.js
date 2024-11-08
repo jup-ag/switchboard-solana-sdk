@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"struct":["VerifierInit","VerifierInitAccounts","VerifierInitArgs","VerifierInitBumps","VerifierInitParams"]};

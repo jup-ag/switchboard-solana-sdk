@@ -62,7 +62,7 @@ impl BufferRelayerAccountData {
 
         let mut disc_bytes = [0u8; 8];
         disc_bytes.copy_from_slice(&data[..8]);
-        if disc_bytes != BufferRelayerAccountData::discriminator() {
+        if disc_bytes != BufferRelayerAccountData::DISCRIMINATOR {
             return Err(SwitchboardError::AccountDiscriminatorMismatch.into());
         }
 

@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"mod":["aggregator_save_result","oracle_heartbeat","permission_set","vrf_close","vrf_lite_close","vrf_lite_request_randomness","vrf_pool_remove","vrf_pool_request_randomness","vrf_request_randomness","vrf_set_callback"]};

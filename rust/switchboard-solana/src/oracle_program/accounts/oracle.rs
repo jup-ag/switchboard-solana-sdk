@@ -1,4 +1,3 @@
-use crate::cfg_client;
 use crate::prelude::*;
 use std::cell::Ref;
 
@@ -82,13 +81,13 @@ impl OracleAccountData {
         account_info: &'info AccountInfo<'info>,
     ) -> anchor_lang::Result<Ref<'info, Self>> {
         let data = account_info.try_borrow_data()?;
-        if data.len() < OracleAccountData::discriminator().len() {
+        if data.len() < OracleAccountData::DISCRIMINATOR.len() {
             return Err(ErrorCode::AccountDiscriminatorNotFound.into());
         }
 
         let mut disc_bytes = [0u8; 8];
         disc_bytes.copy_from_slice(&data[..8]);
-        if disc_bytes != OracleAccountData::discriminator() {
+        if disc_bytes != OracleAccountData::DISCRIMINATOR {
             return Err(ErrorCode::AccountDiscriminatorMismatch.into());
         }
 
@@ -111,41 +110,18 @@ impl OracleAccountData {
     /// let oracle = OracleAccountData::new(oracle_account_info.try_borrow_data()?)?;
     /// ```
     pub fn new_from_bytes(data: &[u8]) -> anchor_lang::Result<&OracleAccountData> {
-        if data.len() < OracleAccountData::discriminator().len() {
+        if data.len() < OracleAccountData::DISCRIMINATOR.len() {
             return Err(ErrorCode::AccountDiscriminatorNotFound.into());
         }
 
         let mut disc_bytes = [0u8; 8];
         disc_bytes.copy_from_slice(&data[..8]);
-        if disc_bytes != OracleAccountData::discriminator() {
+        if disc_bytes != OracleAccountData::DISCRIMINATOR {
             return Err(ErrorCode::AccountDiscriminatorMismatch.into());
         }
 
         Ok(bytemuck::from_bytes(
             &data[8..std::mem::size_of::<OracleAccountData>() + 8],
         ))
-    }
-
-    cfg_client! {
-        pub fn fetch(
-            client: &solana_client::rpc_client::RpcClient,
-            pubkey: Pubkey,
-        ) -> std::result::Result<Self, switchboard_common::SbError> {
-            crate::client::fetch_zerocopy_account(client, pubkey)
-        }
-
-        pub async fn fetch_async(
-            client: &solana_client::nonblocking::rpc_client::RpcClient,
-            pubkey: Pubkey,
-        ) -> std::result::Result<Self, switchboard_common::SbError> {
-            crate::client::fetch_zerocopy_account_async(client, pubkey).await
-        }
-
-        pub fn fetch_sync<T: solana_sdk::client::SyncClient>(
-            client: &T,
-            pubkey: Pubkey,
-        ) -> std::result::Result<Self, switchboard_common::SbError> {
-            crate::client::fetch_zerocopy_account_sync(client, pubkey)
-        }
     }
 }

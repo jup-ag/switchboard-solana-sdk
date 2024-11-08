@@ -1,0 +1,37 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="generator" content="rustdoc"><meta name="description" content="Fetches an account asynchronously using the provided client and public key."><title>fetch_zerocopy_account_async in switchboard_solana::prelude - Rust</title><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceSerif4-Regular-46f98efaafac5295.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Regular-018c141bf0843ffd.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/FiraSans-Medium-8f9a781e4970d388.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Regular-562dcc5011b6de7d.ttf.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="../static.files/SourceCodePro-Semibold-d899c5a5c4aeb14a.ttf.woff2"><link rel="stylesheet" href="../static.files/normalize-76eba96aa4d2e634.css"><link rel="stylesheet" href="../static.files/rustdoc-5bc39a1768837dd0.css"><meta name="rustdoc-vars" data-root-path="../../" data-static-root-path="../static.files/" data-current-crate="switchboard_solana" data-themes="" data-resource-suffix="" data-rustdoc-version="1.77.2 (25ef9e3d8 2024-04-09)" data-channel="1.77.2" data-search-js="search-dd67cee4cfa65049.js" data-settings-js="settings-4313503d2e1961c2.js" ><script src="../static.files/storage-4c98445ec4002617.js"></script><script defer src="sidebar-items.js"></script><script defer src="../static.files/main-48f368f3872407c8.js"></script><noscript><link rel="stylesheet" href="../static.files/noscript-04d5337699b92874.css"></noscript><link rel="alternate icon" type="image/png" href="../static.files/favicon-16x16-8b506e7a72182f1c.png"><link rel="alternate icon" type="image/png" href="../static.files/favicon-32x32-422f7d1d52889060.png"><link rel="icon" type="image/svg+xml" href="../static.files/favicon-2c020d218678b618.svg"></head><body class="rustdoc fn"><!--[if lte IE 11]><div class="warning">This old browser is unsupported and will most likely display funky things.</div><![endif]--><nav class="mobile-topbar"><button class="sidebar-menu-toggle" title="show sidebar"></button></nav><nav class="sidebar"><div class="sidebar-crate"><h2><a href="../../index.html">switchboard_solana</a><span class="version">0.29.108</span></h2></div><div class="sidebar-elems"><h2><a href="index.html">In switchboard_solana::prelude</a></h2></div></nav><div class="sidebar-resizer"></div>
+    <main><div class="width-limiter"><nav class="sub"><form class="search-form"><span></span><div id="sidebar-button" tabindex="-1"><a href="../../switchboard_solana/all.html" title="show sidebar"></a></div><input class="search-input" name="search" aria-label="Run search in the documentation" autocomplete="off" spellcheck="false" placeholder="Click or press ‘S’ to search, ‘?’ for more options…" type="search"><div id="help-button" tabindex="-1"><a href="../../help.html" title="help">?</a></div><div id="settings-menu" tabindex="-1"><a href="../../settings.html" title="settings"><img width="22" height="22" alt="Change settings" src="../static.files/wheel-7b819b6101059cd0.svg"></a></div></form></nav><section id="main-content" class="content"><div class="main-heading"><h1>Function <a href="../index.html">switchboard_solana</a>::<wbr><a href="index.html">prelude</a>::<wbr><a class="fn" href="#">fetch_zerocopy_account_async</a><button id="copy-path" title="Copy item path to clipboard"><img src="../static.files/clipboard-7571035ce49a181d.svg" width="19" height="18" alt="Copy item path"></button></h1><span class="out-of-band"><a class="src" href="../src/switchboard_solana/client/utils.rs.html#341-364">source</a> · <button id="toggle-all-docs" title="collapse all docs">[<span>&#x2212;</span>]</button></span></div><pre class="rust item-decl"><code>pub async fn fetch_zerocopy_account_async&lt;T: Pod + <a class="trait" href="trait.Discriminator.html" title="trait switchboard_solana::prelude::Discriminator">Discriminator</a> + <a class="trait" href="trait.Owner.html" title="trait switchboard_solana::prelude::Owner">Owner</a>&gt;(
+    client: &amp;RpcClient,
+    pubkey: <a class="struct" href="struct.Pubkey.html" title="struct switchboard_solana::prelude::Pubkey">Pubkey</a>
+) -&gt; <a class="enum" href="enum.Result.html" title="enum switchboard_solana::prelude::Result">Result</a>&lt;T, <a class="enum" href="../enum.SbError.html" title="enum switchboard_solana::SbError">SbError</a>&gt;</code></pre><details class="toggle top-doc" open><summary class="hideme"><span>Expand description</span></summary><div class="docblock"><p>Fetches an account asynchronously using the provided client and public key.</p>
+<h2 id="arguments"><a class="doc-anchor" href="#arguments">§</a>Arguments</h2>
+<ul>
+<li><code>client</code> - The non-blocking RPC client used to fetch the account.</li>
+<li><code>pubkey</code> - The public key of the account to fetch.</li>
+</ul>
+<h2 id="generic-parameters"><a class="doc-anchor" href="#generic-parameters">§</a>Generic Parameters</h2>
+<ul>
+<li><code>T</code> - The type of the account data. Must implement <code>bytemuck::Pod</code>, <code>Discriminator</code>, and <code>Owner</code>.</li>
+</ul>
+<h2 id="returns"><a class="doc-anchor" href="#returns">§</a>Returns</h2>
+<p>Returns a <code>Result</code> containing the fetched account data of type <code>T</code> if successful, or an <code>SbError</code> if an error occurs.</p>
+<h2 id="errors"><a class="doc-anchor" href="#errors">§</a>Errors</h2>
+<p>This function can return the following errors:</p>
+<ul>
+<li><code>SbError::AccountNotFound</code> - If the account is not found.</li>
+<li><code>SbError::Message(&quot;no discriminator found&quot;)</code> - If no discriminator is found in the account data.</li>
+<li><code>SbError::Message(&quot;Discriminator error, check the account type&quot;)</code> - If the discriminator does not match the expected value.</li>
+<li><code>SbError::Message(&quot;AnchorParseError&quot;)</code> - If there is an error parsing the account data into type <code>T</code>.</li>
+</ul>
+<h2 id="example"><a class="doc-anchor" href="#example">§</a>Example</h2>
+<div class="example-wrap"><pre class="rust rust-example-rendered"><code><span class="kw">use </span>switchboard_solana::client::NonblockingRpcClient;
+<span class="kw">use </span>switchboard_solana::error::SbError;
+<span class="kw">use </span>switchboard_solana::types::{Discriminator, Owner};
+<span class="kw">use </span>bytemuck::Pod;
+<span class="kw">use </span>solana_sdk::pubkey::Pubkey;
+
+<span class="kw">async fn </span>example(client: <span class="kw-2">&amp;</span>NonblockingRpcClient, pubkey: Pubkey) -&gt; <span class="prelude-ty">Result</span>&lt;(), SbError&gt; {
+    <span class="kw">let </span>account_data: MyAccountType = fetch_zerocopy_account_async(client, pubkey).<span class="kw">await</span><span class="question-mark">?</span>;
+    <span class="comment">// Do something with the fetched account data...
+    </span><span class="prelude-val">Ok</span>(())
+}</code></pre></div>
+</div></details></section></div></main></body></html>

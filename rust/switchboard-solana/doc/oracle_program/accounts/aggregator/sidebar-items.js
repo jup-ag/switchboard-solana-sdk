@@ -1,0 +1,1 @@
+window.SIDEBAR_ITEMS = {"enum":["AggregatorResolutionMode"],"struct":["AggregatorAccountData","AggregatorRound","Hash"]};
